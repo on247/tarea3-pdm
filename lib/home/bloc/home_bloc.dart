@@ -12,6 +12,7 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final _link = "https://jsonplaceholder.typicode.com/users";
+  List<User> _savedList;
   List<User> _userList;
 
   HomeBloc() : super(HomeInitial());
@@ -27,9 +28,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         yield ShowUsersState(usersList: _userList);
       else
         yield ErrorState(error: "No hay elementos por mostrar");
-    } else if (event is FilterUsersEvent) {
-      // TODO hacer despues
-    }
+    } //
+    else if (event is FilterUsersEvent) {
+      _userList = _savedList;
+      if (event.namedProps["filterEven"]) {
+        _userList.retainWhere((element) => element.id % 2 == 0);
+      } else {
+        _userList.retainWhere((element) => element.id % 2 != 0);
+      }
+      yield ShowUsersState(usersList: _userList);
+    } //
+    else if (event is RemoveFilterEvent) {
+      _userList = _savedList;
+      yield ShowUsersState(usersList: _userList);
+    } //
   }
 
   Future _getAllUsers() async {
@@ -39,6 +51,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _userList = List();
         List<dynamic> data = jsonDecode(response.body);
         _userList = data.map((element) => User.fromJson(element)).toList();
+        _savedList = List<User>.from(_userList);
       }
     } catch (error) {
       print(error.toString());

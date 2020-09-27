@@ -12,6 +12,11 @@ class GetAllUsersEvent extends HomeEvent {
   List<Object> get props => [];
 }
 
+class RemoveFilterEvent extends HomeEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class FilterUsersEvent extends HomeEvent {
   final bool filterEven;
 
@@ -19,4 +24,5 @@ class FilterUsersEvent extends HomeEvent {
 
   @override
   List<Object> get props => [filterEven];
+  Map<String, Object> get namedProps => {"filterEven": filterEven};
 }
